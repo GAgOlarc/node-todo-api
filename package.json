@@ -4,7 +4,8 @@
     "description": "",
     "main": "server/server.js",
     "scripts": {
-        "start": "node server/server.js",
+        "start": "set NODE_ENV=production && node server/server.js",
+        "dev": "node server/server.js",
         "test": "mocha server/**/*.test.js",
         "test-watch": "nodemon --exec npm test"
     },
