@@ -48,7 +48,6 @@ app.get('/todos/:id', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`);
-    console.log(process.env.NODE_ENV);
 });
 
 module.exports = { app };
