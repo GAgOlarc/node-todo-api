@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const { mongoose } = require('./db/mongoose');
 const { ObjectID } = require('mongodb');
 
-const { User } = require('./models/user');
+// const { User } = require('./models/user');
 const { Todo } = require('./models/todo');
 
 const app = express();
@@ -48,6 +48,7 @@ app.get('/todos/:id', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`);
+    console.log(process.env.NODE_ENV);
 });
 
 module.exports = { app };
