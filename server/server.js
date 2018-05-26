@@ -34,16 +34,32 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
     const id = req.params.id;
     if (!ObjectID.isValid(id)) {
-        res.status(404).send('invalid');
+        res.status(404).send('Invalid id');
     }
 
     Todo.findById(id).then(todo => {
         if (!todo) {
-            return res.status(404).send('not found');
+            return res.status(404).send('Id not found');
         }
 
         return res.send({todo});
-    }).catch(err => res.status(400).send());
+    }).catch(err => res.status(400).send(err));
+});
+
+app.delete('/todos/:id', (req, res) => {
+    const id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send('Invalid id');
+    }
+
+    Todo.findByIdAndRemove(id).then(todo => {
+        if (!todo) {
+            return res.status(404).send('Id not found');
+        }
+
+        return res.send({todo});
+    }).catch(err => res.status(400).send(err));
 });
 
 app.listen(port, () => {
