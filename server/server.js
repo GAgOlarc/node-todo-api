@@ -34,7 +34,7 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
     const id = req.params.id;
     if (!ObjectID.isValid(id)) {
-        res.status(404).send('Invalid id');
+        return res.status(404).send('Invalid id');
     }
 
     Todo.findById(id).then(todo => {
@@ -50,7 +50,7 @@ app.delete('/todos/:id', (req, res) => {
     const id = req.params.id;
 
     if (!ObjectID.isValid(id)) {
-        res.status(404).send('Invalid id');
+        return res.status(404).send('Invalid id');
     }
 
     Todo.findByIdAndRemove(id).then(todo => {
