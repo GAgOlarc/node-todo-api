@@ -3,7 +3,7 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -17,38 +17,57 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true,
+        required: true,
         minlength: 6
     },
     tokens: [{
         access: {
             type: String,
-            require: true
+            required: true
         },
         token: {
             type: String,
-            require: true
+            required: true
         }
     }]
 });
 
-userSchema.methods.toJSON = function () {
+UserSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject();
 
     return _.pick(userObject, ['_id', 'email']);
 };
 
-userSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthToken = function () {
     const user = this;
     const access = 'auth';
-    const token = jwt.sign({_id: user._id.toHexString(), access}, 'asd123').toString();
+    const token = jwt.sign({ _id: user._id.toHexString(), access }, 'asd123').toString();
 
-    user.tokens = user.tokens.concat([{access, token}]);
+    user.tokens = user.tokens.concat([{ access, token }]);
 
     return user.save().then(() => token);
 };
 
-const User = mongoose.model('User', userSchema);
+UserSchema.statics.findByToken = function (token) {
+    const User = this;
+    let decoded;
 
-module.exports = {User};
+    try {
+        decoded = jwt.verify(token, 'asd123');
+    } catch (err) {
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth' 
+    });
+};
+
+const User = mongoose.model('User', UserSchema);
+
+module.exports = { User };
+
+
